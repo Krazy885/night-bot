@@ -1,0 +1,5 @@
+
+disnake==2.8.1
+pillow==9.5.0
+asyncio==3.4.3
+PyNaCl==1.5.0
