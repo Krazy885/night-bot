@@ -8,6 +8,7 @@ import asyncio
 class ticket(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.persistents_views_added = False
 
 
 
@@ -51,12 +52,11 @@ class ticket(commands.Cog):
 
     @commands.Cog.listener()
     async def on_connect(self):
-        if self.status:
+        if self.persistents_views_added:
             return
         
-        view = disnake.ui.View(timeout=None)
-        view.add_item(Button_for_tickets(self.bot))
-        self.bot.add_view(view, message_id=1105854303391973447)
+
+        self.bot.add_view(Button_for_tickets(self.bot), message_id=1106309230887182416)
 
 
 class Button_for_close(disnake.ui.View):
@@ -91,10 +91,10 @@ class Button_for_tickets(disnake.ui.View):
         super().__init__(timeout=None)
 
 
-    @disnake.ui.button(label='Розыгрыш', style=disnake.ButtonStyle.blurple, emoji='🎉')
+    @disnake.ui.button(label='Розыгрыш', style=disnake.ButtonStyle.blurple, emoji='🎉', custom_id ='розыгрыш')
     async def rozigrish(self, button: disnake.ui.Button, inter: disnake.Interaction):
         category = disnake.utils.get(self.bot.get_all_channels(), id=1079792439105159319)
-        role = inter.guild.get_role(1079792436865400880)
+        role1 = inter.guild.get_role(1079792436865400880)
         overwrites = {
         inter.guild.default_role: disnake.PermissionOverwrite(read_messages=False),
         #inter.guild.role(role): disnake.PermissionOverwrite(read_messages=True, send_messages=True, view_channel=True),
@@ -102,13 +102,14 @@ class Button_for_tickets(disnake.ui.View):
         inter.user: disnake.PermissionOverwrite(read_messages=True, send_messages=True, view_channel=True)
         }
         channel = await inter.guild.create_text_channel(f'{inter.user.name} - обращение', overwrites=overwrites, category=category)   #создаём текст.канал(тикет)
+        await channel.set_permissions(role1, read_messages=True, send_messages=True, view_channel=True)
         embed = disnake.Embed(title='Обращение создано', description='Вы создали тикет чтобы получить свой приз из розыгрыша!\n\nПожалуйста предоставьте скриншоты доказательства того что вы выиграли в розыгрыше.\nЕсли призов было несколько, пожалуйста укажите какой именно приз вы хотите получить.\n\n\nНе забудьте открыть личные сообщения чтобы модератор мог прислать вам ваш приз.', color=0x4e77eb)
         embed.set_footer(text='Получение приза может занять до недели')
         await channel.send(embed=embed)
         await inter.response.send_message(f"Ваще обращение успешно создано, перейдите в канал: {channel.mention} и опишите свой вопрос!", ephemeral=True)
 
 
-    @disnake.ui.button(label='Жалоба', style=disnake.ButtonStyle.danger, emoji ='👮‍♂️')
+    @disnake.ui.button(label='Жалоба', style=disnake.ButtonStyle.danger, emoji ='👮‍♂️', custom_id ='жалоба')
     async def zaloba(self, button: disnake.ui.Button, inter: disnake.Interaction):
         category = disnake.utils.get(self.bot.get_all_channels(), id=1079792439105159319)
         role1 = inter.guild.get_role(1079792436865400880)
@@ -126,10 +127,10 @@ class Button_for_tickets(disnake.ui.View):
         await inter.response.send_message(f"Ваще обращение успешно создано, перейдите в канал: {channel.mention} и опишите свой вопрос!", ephemeral=True)
 
 
-    @disnake.ui.button(label='Помощь', style=disnake.ButtonStyle.success, emoji='🤔')
+    @disnake.ui.button(label='Помощь', style=disnake.ButtonStyle.success, emoji='🤔', custom_id='помощь')
     async def pomosh(self, button: disnake.ui.Button, inter: disnake.Interaction):
         category = disnake.utils.get(self.bot.get_all_channels(), id=1079792439105159319)
-        role = inter.guild.get_role(1079792436865400880)
+        role1 = inter.guild.get_role(1079792436865400880)
         overwrites = {
         inter.guild.default_role: disnake.PermissionOverwrite(read_messages=False),
      #   inter.guild.role: disnake.PermissionOverwrite(read_messages=True, send_messages=True, view_channel=True),
@@ -137,6 +138,7 @@ class Button_for_tickets(disnake.ui.View):
         inter.user: disnake.PermissionOverwrite(read_messages=True, send_messages=True, view_channel=True)
         }
         channel = await inter.guild.create_text_channel(f'{inter.user.name} - обращение', overwrites=overwrites, category=category)   #создаём текст.канал(тикет)
+        await channel.set_permissions(role1, read_messages=True, send_messages=True, view_channel=True)
         embed = disnake.Embed(title='Обращение создано', description='Вы создали тикет чтобы получить помощь\nПожалуйста опишите проблему чтобы мы могли вам помочь!', color=0x4e77eb)
         embed.set_footer(text='Команда поддержки Night')
         await channel.send(embed=embed)

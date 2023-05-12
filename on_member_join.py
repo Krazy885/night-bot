@@ -12,11 +12,11 @@ class On_Member_Join(commands.Cog):
     @commands.Cog.listener() 
     async def on_member_join(self, member):
         db1 = await self.db.get_user(member)
-        banrole = member.guild.get_role(1079792436727009281)
+        banrole = member.guild.get_roles(1079792436727009281)
         if not db1:
             await self.db.create_table()
             await self.db.add_user(member)
-            role = member.guild.get_role(1095437615660019752)
+            role = member.guild.get_roles(1095437615660019752)
             await member.add_roles(role)
             channel = disnake.utils.get(self.bot.get_all_channels(), id=1103321901515935924)
             embed = disnake.Embed(
